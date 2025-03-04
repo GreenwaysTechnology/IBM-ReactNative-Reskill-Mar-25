@@ -36,22 +36,26 @@ const showDashboard = (status) => {
 }
 
 
-async function main() {
-    // getUser()
-    //     .then(user => login(user))
-    //     .then(status => showDashboard(status))
-    //     .then(page => console.log(page))
+function main() {
+    // getUser((user) => {
+    //     login(user, (status) => {
+    //         showDashboard(status, (dpage) => {
+    //             console.log(dpage)
+    //         }, err => console.log(err))
+    //     }, (err) => console.log(err))
+    // }, (err) => console.log(err))
+
+    // getUser().then(user => {
+    //     return login(user)
+    // }).then(status => {
+    //     return showDashboard(status)
+    // }).then(page => console.log(page))
     //     .catch(err => console.log(err))
 
-    try {
-        const user = await getUser()
-        const status = await login(user)
-        const page = await showDashboard(status)
-        console.log(page)
-    }
-    catch (err) {
-        console.log(err)
-    }
-
+    getUser()
+        .then(user => login(user))
+        .then(status => showDashboard(status))
+        .then(page => console.log(page))
+        .catch(err => console.log(err))
 }
 main()
