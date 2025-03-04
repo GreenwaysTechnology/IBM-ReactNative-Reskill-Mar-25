@@ -1170,7 +1170,57 @@ const { findAll } = pkg;
 console.log(firstName, lastName)
 console.log(findAll())
 .............................................................................................
+Built in Node.js Modules:
+.........................
+https://nodejs.org/docs/latest/api/
 
+Built in node modules provides
+
+1.non blocking networking io apis
+   -tcp,http,datagram etc...
+2.timers
+3.file system api
+   to read and write data into disk files
+4.common apis
+   os,events
+
+
+Common apis:
+
+1.OS
+const os = require('node:os')
+
+function main(){
+    console.log(os.arch())
+    console.log(os.cpus())
+}
+main()
+
+2.Events:
+import { EventEmitter } from 'node:events'
+
+//custom event driven programming
+//to register listener we have "on" method, to emit event we have "emit method"
+
+class Sales extends EventEmitter {
+    constructor() {
+        super()
+        this.on('onsold', (evt) => {
+            console.log(evt)
+        })
+    }
+    sale(product) {
+        this.emit('onsold', product)
+    }
+}
+function main() {
+    let sales = new Sales()
+    sales.sale({ id: 1, name: 'product1' })
+}
+main()
+............................................................................................
+				Web Applications in Node
+...........................................................................................
 
 
 
