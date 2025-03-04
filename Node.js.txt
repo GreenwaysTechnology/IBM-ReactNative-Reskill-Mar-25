@@ -938,6 +938,245 @@ async function main() {
 }
 main()
 .....................................................................................
+			Types of modules
+.....................................................................................
+
+1.Custom module
+   built by us
+2.built in modules
+   provided by node.js  
+3.provided by third party/community
+  libs,frameworks
+
+.......................................................................................
+				Modules Pattern
+			       (Custom Module)
+...................................................................................
+
+CommonJs:
+ It is one the module pattern , introduced in 2006, node adopted commonjs as default module pattern.
+ node provides commonjs implementation by default.
+
+You can write node apps using es6 module pattern as well.
+
+How to share code? How to import code?
+
+ Code:
+  Could be variables, functions, classes.
+  Variables can have any literal string,numbers,boolean,objects,functions...
+
+How to share code? How to import code?
+
+ Code:
+  Could be variables,functions,classes.
+  Variables can have any literal string,numbers,boolean,objects,functions...
+
+src
+  |
+  subfolders
+|
+index.js
+
+Sharing code :
+
+Keywords
+exports
+module.exports
+
+Imporing code:
+
+require('fileName')
+require('folderName/fileName')
+
+exports:
+ Used to share more code from the single file.
+ exports packs the entire code into one single js object and returns that object
+
+//pack the code 
+exports.firstName = 'Subramanian'
+exports.lastName = 'Murugan'
+exports.salary = 1000
+exports.status = true
+exports.address = {
+    city: 'Coimbatore'
+}
+exports.skills = ['Java','JavaScript','Node.js']
+
+
+require:
+  It is a function which returns what ever we exported from the file.
+
+const obj= require('fileName')
+
+
+
+src/util.myutil.js
+
+//pack the code 
+exports.firstName = 'Subramanian'
+exports.lastName = 'Murugan'
+exports.salary = 1000
+exports.status = true
+exports.address = {
+    city: 'Coimbatore'
+}
+exports.skills = ['Java', 'JavaScript', 'Node.js']
+exports.saySomething = () => "something"
+
+src/index.js
+//access the code from the myutil.js 
+const res = require('./util/myutil')
+console.log(res)
+
+console.log(`${res.firstName} ${res.lastName} ${res.address.city} ${res.salary}`)
+console.log(`${res.skills} ${res.status} ${res.saySomething()}`)
+
+node src/index.js
+{
+  firstName: 'Subramanian',
+  lastName: 'Murugan',
+  salary: 1000,
+  status: true,
+  address: { city: 'Coimbatore' },
+  skills: [ 'Java', 'JavaScript', 'Node.js' ],
+  saySomething: [Function (anonymous)]
+}
+Subramanian Murugan Coimbatore 1000
+Java,JavaScript,Node.js true something
+....................................................................................
+				module.exports
+....................................................................................
+
+Export only one item from the file.
+
+eg"
+ if you want to share  "Class"
+ if you want to share "array"
+ if you want to share "object"
+
+
+
+src/services/todo.service.js
+
+class TodoService {
+    constructor() {
+
+    }
+    //biz apis
+    save() {
+        return 'save'
+    }
+    findAll() {
+        return 'findAll'
+    }
+    find() {
+        return 'find'
+    }
+    remove() {
+        return 'remove'
+    }
+}
+// module.exports = TodoService
+
+//return object 
+module.exports = new TodoService()
+
+
+src/index.js
+// const TodoService = require('./services/todo.service')
+const todoService = require('./services/todo.service')
+
+// let service = new TodoService()
+
+// console.log(service.save())
+// console.log(service.findAll())
+
+console.log(todoService.save())
+console.log(todoService.findAll())
+
+.................................................................................
+				 Returning data
+.................................................................................
+
+src/mockdata/todo.mock.js
+
+
+const TODOS = require('../mockdata/todo')
+class TodoService {
+    constructor() {
+
+    }
+    //biz apis
+    save() {
+        return 'save'
+    }
+    findAll() {
+        return TODOS
+    }
+    find() {
+        return 'find'
+    }
+    remove() {
+        return 'remove'
+    }
+}
+// module.exports = TodoService
+
+//return object 
+module.exports = new TodoService()
+
+src/index.js
+// const TodoService = require('./services/todo.service')
+const todoService = require('./services/todo.service')
+
+// let service = new TodoService()
+
+// console.log(service.save())
+// console.log(service.findAll())
+
+console.log(todoService.save())
+console.log(todoService.findAll())
+
+How to use es6 module inside node?
+
+Before node 16, there was no direct support of es6 modules, now we can run es6 modules code inside node with some configuration.
+
+src/lib/mylib.js
+export const firstName = 'Subramanian'
+export const lastName = 'Murugan'
+
+src/index.js
+import { firstName,lastName } from "./lib/mylib.js";
+
+console.log(firstName,lastName)
+
+>node src/index.js
+Subramanian Murugan
+
+Mixing commonjs and es 6 module:
+src/lib/todo.service.js
+class TodoService {
+    findAll() {
+        return ["done"]
+    }
+}
+module.exports = new TodoService()
+
+src/index.js
+import { firstName, lastName } from "./lib/mylib.js";
+import pkg from './lib/todo.service.js';
+const { findAll } = pkg;
+
+console.log(firstName, lastName)
+console.log(findAll())
+.............................................................................................
+
+
+
+
+
+
+
 
 
 
