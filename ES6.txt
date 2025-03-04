@@ -28,7 +28,7 @@ JavaScript learning path(ES6):
 1.Language fundamentals
 2.Functions 
 3.Objects
-4.Async Programming
+4.Modules
 
 1.Language fundamentals
  ->Variables
@@ -366,7 +366,7 @@ hello()
 
 ............
 
-AnonyMous functions and args values:
+Anonymous functions and args values:
 ......................................
 
 //anonymous fun and args 
@@ -567,7 +567,7 @@ console.log(`id ${emp.salary}`)
 console.log(`totalSalary ${emp.calculateSalary()}`)
 
 ..................................................................................
-			State initalization
+			State initialization
 ...................................................................................
 
 1.inside class directly
@@ -796,7 +796,7 @@ function printEmployee({ id, name, address: { city } }) {
 printEmployee({ id: 1, name: 'Subramanian', address: { city: 'Coimbatore' } })
 
 ..................................................................................
-			Return object and destructuring
+			Return object and Destructuring
 ..................................................................................
 // function getStock() {
 //     return {
