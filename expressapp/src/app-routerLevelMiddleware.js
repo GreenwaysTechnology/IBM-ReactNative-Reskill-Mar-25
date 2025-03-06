@@ -1,13 +1,7 @@
 const express = require('express')
-const bodyParser= require('body-parser')
-const morgan = require('morgan')
+// const customerRouter = require('./routers/customer.router')
+//create application object
 const app = express()
-
-//register bodyParaser
-app.use(bodyParser.json())
-//register logger
-app.use(morgan('combined'))
-
 
 //connecting routers with application object
 // app.use('/api/customers',customerRouter)

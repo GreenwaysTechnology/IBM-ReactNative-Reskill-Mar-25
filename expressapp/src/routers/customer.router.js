@@ -3,6 +3,12 @@ const { findAll } = require('../services/customer.service')
 //create router
 const customerRouter = express.Router()
 
+//router specific middleware
+customerRouter.use((req,res,next)=>{
+    console.log('Customer router is called')
+    next()
+})
+
 //expose api
 customerRouter.get('/', async (req, res) => {
     try {
@@ -40,12 +46,24 @@ customerRouter.get('/:id', async (req, res) => {
 
 customerRouter.post('/', async (req, res) => {
     try {
-        res.json({message:'save'})
+        // let data=''
+        // req.on('data',(chunk)=>{
+        //   data+=chunk
+        // })
+        // req.on('end',()=>{
+        //     res.json(data)
+        // })
+        const user = req.body 
+        console.log(user)
+        res.status(201).json(user)
+      
     }
     catch (err) {
         res.status(404).json({ err: err })
     }
 })
+
+
 customerRouter.put('/', async (req, res) => {
     try {
         res.json({message:'update'})

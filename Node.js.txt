@@ -2411,10 +2411,960 @@ customerRouter.get('/filter', async (req, res) => {
 ...........................................................................................
 			Middlewares and database integration
 ...........................................................................................
+Middlewares:
+
+ What is Middleware?
+ 
+ Middleware is JavaScript function that have access request object and response and next function in the application request response cycle.
+
+...................................................................................
+			  Express middlewares
+...................................................................................
+
+Middlewares:
+
+ What is Middleware?
+ 
+ Middleware is javascript function that have access request object and response and next function in the application request response cycle.
+  
+ The difference between normal function which handles req and response with express , express takes third arg
+
+ normal function
+  app.get('url',(req,res)=>{})
+
+ Middleware function
+  app.get('url',(req,res,next)=>{
+       //pre and post processing
+  })
+ req and res are objects
+ next is a function
+
+The "next" function is a function in the express router which, when invoked, executes the middleware succeeding the current middleware.
+
+Tasks are middleware is doing:
+
+1.Execute any code
+2.Make changes to request and response object before handling real req and res cycle.
+3.Middlwares can be attached on application object and also router object
+
+
+use Method
+  use method is used to registry middleware.
+
+app.use
+router.use
+
+app.use('/api/users', require('./routers/users/user.router'))
+
+ In this code we have registered already middleware which is called as "routerMidleware" - Router itself is middleware.
+
+How to write our own middleware? - Custom Middleware.
+
+Use Case : Middleware for GET /hello
+
+const express = require('express')
+require('dotenv').config()
+
+const app = express()
+const PORT = process.env.PORT || 3000
+
+//middleware 
+//req is object
+//res is object
+//next is function
+app.get('/hello', (req, res, next) => {
+    //middleware logic
+    console.log('middleware is called')
+    //move to next middleware in the chain or to request handler
+    next()
+})
+app.get('/hello', (req, res) => {
+    return res.end('hello')
+})
+
+
+const server = app.listen(PORT, () => {
+    console.log(`Express server is running at ${server.address().port}`)
+})
+				
+Sending custom headers
+........................
+const express = require('express')
+const app = express()
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3000
+
+//middleware
+app.get('/hello', (req, res, next) => {
+    //middleware code
+    console.log('middleware is called')
+    res.set({ 'secret': '222232ssfsfsdf' })
+    next() //this is required
+})
+
+//route
+app.get('/hello', (req, res) => {
+    res.end('hello')
+})
+//start server
+const server = app.listen(PORT, () => {
+    console.log(`Express Web Server is running at ${server.address().port}`)
+})
+
+The above middleware is called only for '/hello' router.
+.....................................................................................
+			 Global Middleware
+.....................................................................................
+I want to execute middleware for all route and all http methods in application.
+
+const express = require('express')
+const app = express()
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3000
+
+//middleware
+app.use((req, res, next) => {
+    //middleware code
+    console.log('middleware is called')
+    res.set({ 'secret': '222232ssfsfsdf' })
+    next() //this is required
+})
+
+//route
+app.get('/hello', (req, res) => {
+    res.end('hello')
+})
+
+app.get('/hai', (req, res) => {
+    res.end('hai')
+})
+//start server
+const server = app.listen(PORT, () => {
+    console.log(`Express Web Server is running at ${server.address().port}`)
+})
+
+....................................................................................
+		Specific Url , any http method
+....................................................................................
+
+const express = require('express')
+const app = express()
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3000
+
+//middleware
+app.post('/hello',(req, res, next) => {
+    res.set({ 'secret': '222232ssfsfsdf' })
+    next() //this is required
+})
+
+//route
+app.get('/hello', (req, res) => {
+    res.end('hello get')
+})
+
+app.post('/hello', (req, res) => {
+    res.end('hello post')
+})
+//start server
+const server = app.listen(PORT, () => {
+    console.log(`Express Web Server is running at ${server.address().port}`)
+})
+.....................................................................................
+			Multi middlewares /Middleware chain
+.....................................................................................
+
+We can have n-number of middlewares,order of execution how we have registered.
+
+const express = require('express')
+const app = express()
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3000
+
+app.use((req, res, next) => {
+    res.set('companyName', 'IBM')
+    next()
+})
+
+//middleware
+app.post('/hello', (req, res, next) => {
+    res.set({ 'secret': '222232ssfsfsdf' })
+    next() //this is required
+})
+
+//route
+app.get('/hello', (req, res) => {
+    res.end('hello get')
+})
+app.get('/hai', (req, res) => {
+    res.end('hai get')
+})
+app.post('/hello', (req, res) => {
+    res.end('hello post')
+})
+//start server
+const server = app.listen(PORT, () => {
+    console.log(`Express Web Server is running at ${server.address().port}`)
+})
+.....................................................................................
+....................................................................................
+			Router level middleware
+....................................................................................
+
+Middleware is set on Router Object
+
+router.use((req,res,next)=>{
+  next()
+})
+router.use('/url'(req,res,next)=>{
+  next()
+})
+router.get('/url'(req,res,next)=>{
+  next()
+})
+
+....................................................................................
+			Router level middleware
+....................................................................................
+
+Middleware is set on Router Object
+
+router.use((req,res,next)=>{
+  next()
+})
+router.use('/url'(req,res,next)=>{
+  next()
+})
+router.get('/url'(req,res,next)=>{
+  next()
+})
+
+const express = require('express')
+const customerServicce = require('../services/customer.service')
+//create Router Object
+const customerRouter = express.Router()
+
+customerRouter.use((req, res, next) => {
+    console.log('customerRouter is called')
+    next()
+})
+
+//apis - get,getById,save,delete,update
+//api/customers/
+customerRouter.get('/', async (req, res) => {
+    try {
+        const users = await customerServicce.findAll();
+        res.json(users)
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+
+customerRouter.get('/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id)
+        const customer = await customerServicce.findById(id);
+        if (customer) {
+            return res.json(customer)
+        }
+        return res.status(500).json({ err: `Requestd Customer ${id} Not Found` })
+
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+customerRouter.post('/', (req, res) => {
+    try {
+        let customer = ''
+        req.on('data', (chunk) => {
+            customer += chunk
+        })
+        req.on('end', async () => {
+            const customerObj = JSON.parse(customer)
+            const users = await customerServicce.save(customerObj)
+            return res.status(201).json(users)
+        })
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+
+
+customerRouter.post('/', async (req, res) => {
+    try {
+        const user = await customerServicce.save();
+        res.json(user)
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+
+
+module.exports = customerRouter
+.....................................................................................
+		  Can we pass parameters to the Middleware so that we can 
+		     configure middleware - Configurable Middlewares
+....................................................................................
+Middleware which takes parameter , it should be higher order function. - function should return another function.
+
+inner function is middleware.
+
+Syntax: without explicit parameter
+
+app.use(function(req,res,next)=>{})
+
+Syntax: with explicit parameter
+
+const mymiddleware = function(param) {
+
+  return function(req,res,next){
+     //access param
+
+    next()
+  }
+}
+app.use(mymiddleware('param'))
+
+
+eg:
+
+const myMiddleware = function (param) {
+    //return function
+    return function (req, res, next) {
+        console.log('Got Param', param)
+        next()
+    }
+}
+
+app.use(myMiddleware('Marsh'))
+
+.....................................................................................
+.....................................................................................
+				Types of Middlewares
+.....................................................................................
+1.Application middleware
+2.Router level middleware
+3.Error handling middleware
+4.Third party middleware
+
+
+1.Application middleware:
+  Middleware is attached on application object
+
+2.Router level middlware
+
+->writing router:
+
+ In express except ,request and response , all features including router is middleware.
+ Router is in built middleware.
+
+src/app.js
+const express = require('express')
+const customerRouter = require('./router/customer.router')
+const app = express();
+
+//register middleware 
+app.use('/api/customers', customerRouter)
+
+//api - based on resources - customer,products,payments
+
+
+app.listen(3000, () => {
+    console.log('Express server is running')
+})
+
+src/app/router/customer.router.js
+const express = require('express')
+const customerRouter = express.Router()
+
+//middleware
+customerRouter.use(function (req, res, next) {
+    console.log('customer global middleware')
+    next()
+})
+customerRouter.get('/', function (req, res, next) {
+    console.log('customer get middleware')
+    res.set({
+        'customer': 'CUSTOMER GET'
+    })
+    next()
+})
+
+//api 
+customerRouter.get('/', (req, res) => {
+    res.json({ message: 'CUSTOMERS' })
+})
+customerRouter.post('/', (req, res) => {
+    res.json({ message: 'customers post' })
+})
+
+module.exports = customerRouter
+
+				Error Handling middleware
+.....................................................................................
+
+To handle error we have error handling middleware.
+
+
+Error handling middleware takes four args instead of three arg.
+
+app.use((err, req, res, next)=> {
+    //handle error 
+     console.err(err.message)
+    //send error report to the user
+    res.status(500).send('something went wrong')
+})
+
+
+const express = require('express')
+const app = express();
+
+app.use((err, req, res, next) => {
+    //  next()
+    res.status(500);
+    res.send('Internal Server Error');
+})
+
+//api test error 
+app.get('/api/greet/:message', (req, res) => {
+    const message = req.params.message
+    if (message === 'hello') {
+        res.send(message)
+    } else {
+        throw new Error('Broken...')
+    }
+})
+
+app.listen(3000, () => {
+    console.log('Express server is running')
+})
+.....................................................................................
+...................................................................................
+			Built in and third party middlewares
+...................................................................................
+Built in middleware or third party middlewares
+
+Middlewares are supplied as part of the express team, open source community.
+https://expressjs.com/en/resources/middleware.html
+
+in order to parse the incoming payload into javascript object.
+
+Built in middleware or third party middlewares
+
+Middlewares are supplied as part of the express team, open source community.
+
+
+in order to parse the incoming payload into javascript object.
+
+body-parser:
+
+Node.js body parsing middleware.
+
+Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+
+.....................................................................................
+...................................................................................
+			Built in and third party middlewares
+...................................................................................
+Built in middleware or third party middlewares
+
+Middlewares are supplied as part of the express team, open source community.
+https://expressjs.com/en/resources/middleware.html
+
+in order to parse the incoming payload into javascript object.
+
+Built in middleware or third party middlewares
+
+Middlewares are supplied as part of the express team, open source community.
+
+
+in order to parse the incoming payload into javascript object.
+
+body-parser:
+
+Node.js body parsing middleware.
+
+Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+
+Steps
+
+1.install middleware
+ npm install body-parser
+
+2.require in the code
+ const bodyParser = require('body-parser')
+
+app.js
+require('dotenv').config()
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+
+const PORT = process.env.PORT || 3000
+
+//register bodyparserMiddleware
+app.use(bodyParser.json())
+
+
+app.use('/api/users', require('./routers/users/user.router'))
+
+
+app.get('/', (req, res) => {
+    res.end('Home Page')
+})
+
+
+//start server
+const server = app.listen(PORT, () => {
+    console.log(server.address())
+    console.log(`Express is running @ ${server.address().port}`)
+})
+
+router/user.js
+const express = require('express')
+const { findAll, findById, save } = require('../../services/user.service')
+
+//create Router
+const UserRouter = express.Router()
+
+//UserRouter middleware
+UserRouter.use((req, res, next) => {
+    console.log("User Router Globale Middleware")
+    next()
+})
+UserRouter.post('/', (req, res, next) => {
+    console.log("User Router Post Middleware")
+    next()
+})
+//api
+UserRouter.get('/', async (req, res) => {
+    try {
+        const users = await findAll();
+        res.json(users)
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+
+UserRouter.get('/:id', async (req, res) => {
+    const id = parseInt(req.params.id)
+    try {
+        const user = await findById(id);
+        if (!user) {
+            return res.json({ messgae: 'User Not Found' })
+        }
+        res.json(user)
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+
+//here code receives input as plain string, not json standard string
+// UserRouter.post('/', async (req, res) => {
+//     try {
+//         let data = ''
+//         req.on('data', (chunk) => {
+//             data += chunk
+//         })
+//         req.on('end', async () => {
+//             const user = await save(data);
+//             res.json(user)
+//         })
+//     }
+//     catch (err) {
+//         res.json({ err: err })
+//     }
+// })
+
+UserRouter.post('/', async (req, res) => {
+    try {
+        const user = req.body
+        console.log(user)
+        const response = await save(user);
+        res.json(response)
+    }
+    catch (err) {
+        res.json({ err: err })
+    }
+})
+..............................................................................................
+				 Logger
+............................................................................................
+
+In Express, we have many logger implementation ...
+
+morgan:
+   HTTP request logger middleware for node.js
+
+How to use Morgan
+
+Steps:
+
+npm install morgan
+
+
+configuration:
+
+const express = require('express');
+require('dotenv').config()
+const morgan = require('morgan')
+const fs = require('node:fs')
+const path = require('node:path')
+const PORT = process.env.PORT || 3000
+const app = express()
+
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+//register logger
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
+app.use(morgan('combined', { stream: accessLogStream }))
+
+app.use('/api/customers', require('./routers/customer.router'))
+app.use('/api/products', require('./routers/products.router'))
+
+const server = app.listen(PORT, () => {
+    console.log(server.address())
+    console.log(`Express server is running @ ${server.address().port}`)
+});
+............................................................................................
+			  Database Integration
+.........................................................................................
+.....................................................................................
+			  Database Integration
+.....................................................................................
+
+Express can integrate sql and no sql databases, provided database drivers.
+
+sql databases:
+1.microsoft sql server
+2.MySql
+3.Postgress SQL
+4.Oracle
+etc...
+
+NoSql
+1.Mongodb
+2.redis
+3.neo4j
+etc...
+
+.....................................................................................
+			ORM and ODM
+.....................................................................................
+
+ORM - Object relational mapping for sql databases
+ODM - Object Document Mapping for nosql-Mongodb
+
+ORM framworks for node.js
+1.Prisma
+3.sequelize
+2.typeorm
+etc...
+
+ODM framework for Mongodb:
+.........................
+
+1.mongoose -https://mongoosejs.com/docs/
+2.Prisma 
+
+Set up Prisma framework:
+........................
+
+Relational databases
+
+Prerequisites
+1.an existing Node.js project with a package.json
+
+2.Node.js installed on your machine
+
+3.A database server running and a database with at least one table
+  (we are going sqlite db)
+
+
+create project with all dependency:
+
+ Note: we are going to use in-memory database called sqlite.
+
+Steps:
+G:\IBM\2024\Oct\NodeJs\prismaSQL>npm init --yes
+
+npm i express body-parser
+npm i nodemon --save-dev
+npm install prisma --save-dev
+
+npx prisma
+
+Prisma is a modern DB toolkit to query, migrate and model your database (https://prisma.io)
+
+Usage
+
+  $ prisma [command]
+
+Commands
+
+            init   Set up Prisma for your app
+        generate   Generate artifacts (e.g. Prisma Client)
+              db   Manage your database schema and lifecycle
+         migrate   Migrate your database
+          studio   Browse your data with Prisma Studio
+        validate   Validate your Prisma schema
+          format   Format your Prisma schema
+         version   Displays Prisma version info
+           debug   Displays Prisma debug info
+
+Flags
+
+npx prisma init
+
+creates a new directory called prisma that contains a file called schema.prisma, which contains the Prisma schema with your database connection variable and schema models
+creates the .env file in the root directory of the project, which is used for defining environment variables (such as your database connection)
+
+
+npx prisma init --datasource-provider sqlite
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+.env
+PORT=3000
+
+# This was inserted by `prisma init`:
+# Environment variables declared in this file are automatically made available to Prisma.
+# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+DATABASE_URL="file:./dev.db"
+....................................................................................
+				connect db
+....................................................................................
+
+Already we have connection string defined in ".env" file and provider in prisma.schema
+.....................................................................................
+				Prisma client
+
+Prima client is object which is responsible for talking to database ,
+
+which provides apis for all database operations - CURD operations
+
+npm install @prisma/client
+
+.....................................................................................
+				Define model(Entity)
+....................................................................................
+
+Model represents table in database.
+
+1.Represent the entities of your application domain
+2.Map to the tables (relational databases like PostgreSQL) or collections (MongoDB)   in your database
+3.Form the foundation of the queries available in the generated Prisma Client API
+4.When used with TypeScript, Prisma Client provides generated type definitions for  your models and any variations of them to make database access entirely type safe.
 
 
 
 
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+//define model - describe table structure;database independant
+//User is mapped against table
+model User {
+  // fields- columns
+  id    Int     @id @default(autoincrement())
+  name  String?
+  email String  @unique
+}
+
+
+Database Migration step:
+
+Which creates scripts
+
+npx prisma migrate dev
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+SQLite database dev.db created at file:./dev.db
+
+√ Enter a name for the new migration: ... mymigration
+Applying migration `20240209080353_mymigration`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20240209080353_mymigration/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (v5.9.1) to .\node_modules\@prisma\client in 64ms
+
+
+Testing :
+ Whether all tables are created inside db or not
+
+>npx prisma studio
+
+.................................................................................
+			Prisma Client and CURD operations
+...................................................................................
+
+Create Prisma client Object
+
+src/routers/user.router.js
+const userRouter = require('express').Router();
+const { PrismaClient } = require('@prisma/client')
+
+
+//create prisma object 
+const prisma = new PrismaClient()
+//expose api
+userRouter.get('/', async (req, res) => {
+    try {
+        const users = await prisma.user.findMany()
+        res.status(200).json(users)
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message })
+    }
+
+})
+userRouter.post('/', async (req, res) => {
+    try {
+        const newUser = req.body
+        if (newUser) {
+            const user = await prisma.user.create({
+                data: {
+                    email: newUser.email,
+                    name: newUser.name
+                }
+            })
+            res.status(201).location("/api/users/save").json(user)
+        }
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message })
+    }
+})
+userRouter.get('/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                //id: id
+                id
+            },
+        })
+        if (user == null) {
+            res.status(401).json({ message: `User not found for ID ${id}` })
+        }
+        res.status(200).json(user)
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message })
+    }
+})
+userRouter.put('/:id', async (req, res) => {
+    try {
+        const id = Number(req.params.id)
+        const user = req.body
+        //update 
+        const updateUser = await prisma.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                name: user.name,
+                email: user.email
+            }
+        })
+        if (updateUser) {
+            res.status(200).json(updateUser)
+        } else {
+            res.status(401).json({ message: `Update failed for ${id}` })
+        }
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message })
+    }
+})
+
+userRouter.delete('/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                //id: id
+                id
+            },
+        })
+        if (user == null) {
+            res.status(401).json({ message: `User not found for ID ${id}` })
+        } else {
+            await prisma.user.delete({
+                where: {
+                    id
+                },
+            })
+            res.status(204).end()
+        }
+
+
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message })
+    }
+})
+
+module.exports = userRouter
+
+src/app.js
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const PORT = process.env.PORT || 3000
+
+app.use(bodyParser.json())
+
+app.use('/api/users', require('./routers/user.router'))
+
+const server = app.listen(PORT, () => {
+    console.log(server.address())
+    console.log(`Express is running @ ${server.address().port}`)
+})
+
+....................................................................................
 
 
 
