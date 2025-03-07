@@ -1376,3 +1376,343 @@ function App() {
     </>
 }
 export default App;
+
+.................................................................................
+				conditional rendering
+.................................................................................
+
+How to display UI based on condition? How we can use if..else or tenary operator?
+
+In React, you can conditionally render jsx using javascript syntax like if statement ,&& and ?: operator..
+
+
+Using If..else:
+import { TODOS } from "./mock-data/todos"
+
+const Item = props => {
+  const { name, status } = props.todo
+  if (status) {
+    return <li>{name} ✔</li>
+  } else {
+    return <li>{name}</li>
+  }
+}
+const TodoList = props => {
+  return <>
+    <ul>
+      {
+        props.todos.map(todo => {
+          return <>
+            <Item todo={todo} />
+          </>
+        })
+      }
+    </ul>
+  </>
+}
+
+
+function App() {
+  return <TodoList todos={TODOS} />
+}
+export default App
+
+import { TODOS } from "./mock-data/todos"
+
+//using traditionl if..else
+// const Item = props => {
+//   const { name, status } = props.todo
+//   if (status) {
+//     return <li>{name} ✔</li>
+//   } else {
+//     return <li>{name}</li>
+//   }
+// }
+
+// const Item = props => {
+//   const { name, status } = props.todo
+//   return <li>
+//     {status ? `${name} ✔` : name}
+//   </li>
+// }
+
+// const Item = ({ todo: { name, status } }) => {
+//   // const { name, status } = props.todo
+//   // console.log(props)
+//   return <li>
+//     {status ? `${name} ✔` : name}
+//   </li>
+
+// }
+const CompletedItem = ({ name }) => <span>{name} ✔</span>
+
+const Item = ({ todo: { name, status } }) => {
+  // const { name, status } = props.todo
+  // console.log(props)
+  return <li>
+    {status ? <CompletedItem name={name} /> : name}
+  </li>
+
+}
+
+const TodoList = props => {
+  return <>
+    <ul>
+      {
+        props.todos.map(todo => {
+          return <>
+            <Item todo={todo} />
+          </>
+        })
+      }
+    </ul>
+  </>
+}
+
+
+function App() {
+  return <TodoList todos={TODOS} />
+}
+export default App;
+.............................................................................................
+
+			   State Pattern
+			  (Event Handling)
+.............................................................................................
+
+
+What is state?
+  State is another way of representing data in React.
+
+As of we have seen data is not changing or updating...
+
+How to introduce State?
+
+There are two ways
+
+1.class pattern 
+   It is legacy way of representing state and Managining state
+   It is not recommended..
+
+2.Function pattern
+    It is modern way of representing state
+    State is represented via "Hooks".
+
+			   State Pattern
+			  (Event Handling)
+................................................................................
+
+What is state?
+  State is another way of representing data in React.
+
+As of we have seen data is not changing or updating...
+
+How to introduce State?
+
+There are two ways
+
+1.class pattern 
+   It is legacy way of representing state and Managining state
+   It is not recommended..
+
+2.Function pattern
+    It is modern way of representing state
+    State is represented via "Hooks".
+
+
+
+Class Pattern:
+
+Use case: 1.Declare Component
+import React  from "react";
+
+class Review extends React.Component {
+
+  render() {
+    return <div>
+      <h1>Review App</h1>
+    </div>
+  }
+}
+
+function App() {
+    return <>
+      <Review/>
+    </>
+}
+export default App;
+
+Use case: How to declare state.
+
+import React from "react";
+
+
+class Review extends React.Component {
+
+    //declare state
+    state = {
+        //your state
+        like: 0
+    }
+
+    render() {
+        console.log(this.state)
+        return <div>
+            <h1>Review App</h1>
+            <h2>Like : {this.state.like}</h2>
+        </div>
+    }
+}
+
+function App() {
+    return <>
+        <Review />
+    </>
+}
+export default App;
+..............................................................................
+				 Introducing Event Handling
+...............................................................................
+
+Use Case : Introducing listeners
+import React from "react";
+
+
+class Review extends React.Component {
+
+    //declare state
+    state = {
+        //your state
+        like: 0
+    }
+    //listener 
+    onLike = () => {
+        console.log('Onlike is called')
+    }
+    render() {
+        console.log(this.state)
+        return <div>
+            <h1>Review App</h1>
+            <h2>Like : {this.state.like}</h2>
+            <button onClick={this.onLike}>Like</button>
+        </div>
+    }
+}
+
+function App() {
+    return <>
+        <Review />
+    </>
+}
+export default App;
+................................................................................
+				State Mutation getting started
+................................................................................
+
+How Component can change the data?
+
+-Via State
+
+How state can be changed
+
+-Via Events
+
+import React from "react";
+
+
+class Review extends React.Component {
+
+    //declare state
+    state = {
+        //your state
+        like: 0
+    }
+    //listener 
+    onLike = () => {
+        this.state.like++
+        console.log(this.state)
+    }
+    render() {
+        console.log(this.state)
+        return <div>
+            <h1>Review App</h1>
+            <h2>Like : {this.state.like}</h2>
+            <button onClick={this.onLike}>Like</button>
+        </div>
+    }
+}
+
+function App() {
+    return <>
+        <Review />
+    </>
+}
+export default App;
+
+
+In the above we have incremented, like inside listener, but no update in UI
+
+Why?
+  
+  UI logic is written inside render function,
+  When ever like is changed, we need to call render function, so that ui could be updated with  new like data.
+
+How to call render?
+
+import React from "react";
+
+
+class Review extends React.Component {
+
+    //declare state
+    state = {
+        //your state
+        like: 0
+    }
+    //listener 
+    onLike = () => {
+        this.state.like++
+        // console.log(this.state)
+        this.render()
+    }
+    render() {
+        console.log('render is called')
+        console.log(this.state)
+        return <div>
+            <h1>Review App</h1>
+            <h2>Like : {this.state.like}</h2>
+            <button onClick={this.onLike}>Like</button>
+        </div>
+    }
+}
+
+function App() {
+    return <>
+        <Review />
+    </>
+}
+export default App;
+
+You can notice in the above, we have called render inside listener, render is called but no UI update.
+
+Why?
+
+Can we call render method directly inside event listener...
+
+Yes, but no impact on ui update...
+
+   onLike = () => {
+        this.state.like++
+        console.log(this.state.like)
+        this.render()
+        console.log('onLike is clicked')
+    }
+Note: render should be not called directly in order to update user interface..
+.................................................................................................................................................
+
+
+
+
+
+
+
