@@ -144,7 +144,7 @@ index.html           Browser runtime(C program)         Javascript Engine
 
                  Every Html ELEMENT Inside Browser is "C Program"
 
-	       Every Html ELEMENT Inside javascript engine is "Object"
+	       Every Html ELEMENT Inside JavaScript engine is "Object"
 
 
 javascript developer ---->uses api --->to communicate Object---->js engine---->browser engine.	*************************************************************************************
@@ -399,7 +399,7 @@ Based on VDOM(Virtual DOM) specification...
 
 React is created by face book.
 
-React was created not for others but created for face book one of the use case called "Buddylist" / chat application.
+React was created not for others but created for face book one of the use case called "Buddy list" / chat application.
 
 Instagram web version was fully built by react.
 
@@ -671,7 +671,146 @@ react-dom.js
 
    	    Components can be created any one or mixed way  style.
     	 "functional Pattern" is more popular and recommended pattern....
+...................................................................................
+			Component Creational patterns
+...................................................................................
 
+
+1.variable pattern
+2.functional pattern
+3.es 6 class pattern
+
+     Components can be created any one or mixed way  style.
+    "functional Pattern" is more popular and recommended pattern....
+
+
+
+1.variable pattern
+import { createRoot } from "react-dom/client"
+
+//variable pattern 
+//Here Heading is just variable , referencing the Component
+//<h1>xxx</h1> -  Component
+const Heading = <h1>Hello React! How are you?</h1>
+
+createRoot(document.getElementById('root')).render(Heading)
+
+
+2.functional pattern
+
+ 2.1.normal function - es 5 function
+ 2.1.arrow function -  es 6 function 
+
+es 5 function:
+import { createRoot } from "react-dom/client"
+
+//functions 
+function Heading() {
+    return <h1>Hello, React!</h1>
+}
+
+createRoot(document.getElementById('root')).render(Heading())
+
+render(Heading()) -  here we invoke function which is not recommended 
+
+render(<Heading></Heading>) - here we use like html tag 
+render(<Heading/>) - here we use like html tag -self closing
+
+import { createRoot } from "react-dom/client"
+
+//functions 
+function Heading() {
+    return <h1>Hello, React!</h1>
+}
+
+// createRoot(document.getElementById('root')).render(Heading())
+// createRoot(document.getElementById('root')).render(<Heading></Heading>)
+
+createRoot(document.getElementById('root')).render(<Heading/>)
+
+
+2.1.arrow function -  es 6 function 
+import { createRoot } from "react-dom/client"
+
+//arrow
+// const Heading = () => {
+//     return <h1>Hello, React!</h1>
+// }
+const Heading = () => <h1>Hello, React!</h1>
+
+createRoot(document.getElementById('root')).render(<Heading />)
+.....................................................................................
+			 ES6 Classes
+.....................................................................................
+The latest react echo system, does not recommend to go with class patterns.
+
+import React from "react"
+import { createRoot } from "react-dom/client"
+
+class Heading extends React.Component {
+
+    render() {
+        return <h1>Hello React!!</h1>
+    }
+}
+
+
+createRoot(document.getElementById('root')).render(<Heading />)
+
+
+.....................................................................................
+.............................................................................................
+			    Fragements
+.............................................................................................
+
+There might be use case where i dont want root element, but without root element compiler gives error.
+Can we skip the root element without compile time error.
+
+ Yes
+
+Fragements:
+  
+   Fragements are invisible root element , just only compilation purpose
+
+
+Syntax:
+
+ <React.Fragment>
+
+ </React.Fragement>
+ <Fragment>
+
+ </Fragement>
+ <>
+
+ </>
+import ReactDOM from 'react-dom/client';
+// import React, { Fragment } from 'react';
+
+// const Welcome = () => {
+//     return <React.Fragment>
+//         <h1>Site Heading</h1>
+//         <p>This is react</p>
+//     </React.Fragment>
+// }
+
+// const Welcome = () => {
+//     return <Fragment>
+//         <h1>Site Heading</h1>
+//         <p>This is react</p>
+//     </Fragment>
+// }
+
+const Welcome = () => {
+    return <>
+        <h1>Site Heading</h1>
+        <p>This is react</p>
+    </>
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(<Welcome />)
 
 
 
