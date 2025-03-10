@@ -1,34 +1,63 @@
 import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import { produce } from 'immer'
 
-//parent component
-class Counter extends React.Component {
+class User extends React.Component {
+
     state = {
-        counter: 0
+        users: [],  // handle actual user data
+        isLoading: false, //handle spinner
+        error: null
     }
-    onIncrement = () => {
-        this.setState(({ ...this.state, counter: this.state.counter + 1 }))
-    }
-    render() {
-        return <CounterDisplay counter={this.state.counter} onIncrement={this.onIncrement} />
-    }
-}
 
-//child component
-const CounterDisplay = (props) => {
-    return <div>
-        <h1>Counter App</h1>
-        <h2>Value : {props.counter}</h2>
-        <button onClick={props.onIncrement} >+</button>
-    </div>
+    async componentDidMount() {
+        //const url = 'http://localhost:3000/api/users'
+        const url = 'https://jsonplaceholder.typicode.com/users'
+        try {
+            const response = await fetch(url)
+            const users = await response.json()
+            this.setState(produce(this.state, (draft) => {
+                draft.users = users
+                draft.isLoading = true
+            }))
+        }
+        catch (err) {
+            console.log(err)
+            this.setState(produce(this.state, (draft) => {
+                draft.error = err
+                draft.isLoading = true
+            }))
+        }
+    }
+
+    render() {
+        //conditional render
+        const { users, isLoading, error } = this.state
+        if (error) {
+            return <h1>Something went Wrong {error.message}</h1>
+        } else if (!isLoading) {
+            return <h1>Loading....</h1>
+        } else {
+            return <ul>
+                {
+                    users.map(user => {
+                        return <li key={user.id}>
+                            <span>{user.name} {user.email}</span>
+                        </li>
+                    })
+                }
+            </ul>
+        }
+
+    }
 }
 
 
 const App = () => {
 
     return <>
-        <Counter />
+        <User />
     </>
 }
 
