@@ -3,13 +3,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-var corsOptions = {
-    origin: 'http://localhost:5173/',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }
-app.use(cors(corsOptions))
-
 app.use(bodyParser.json())
+app.use(cors());
 
 app.use('/api/users', require('./routers/user.router'))
 

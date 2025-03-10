@@ -2425,7 +2425,7 @@ Middlewares:
 
  What is Middleware?
  
- Middleware is javascript function that have access request object and response and next function in the application request response cycle.
+ Middleware is JavaScript function that have access request object and response and next function in the application request response cycle.
   
  The difference between normal function which handles req and response with express , express takes third arg
 
@@ -2445,7 +2445,7 @@ Tasks are middleware is doing:
 
 1.Execute any code
 2.Make changes to request and response object before handling real req and res cycle.
-3.Middlwares can be attached on application object and also router object
+3.Middlewares can be attached on application object and also router object
 
 
 use Method
@@ -2577,7 +2577,7 @@ const server = app.listen(PORT, () => {
 			Multi middlewares /Middleware chain
 .....................................................................................
 
-We can have n-number of middlewares,order of execution how we have registered.
+We can have n-number of middlewares, order of execution how we have registered.
 
 const express = require('express')
 const app = express()
@@ -2610,24 +2610,7 @@ app.post('/hello', (req, res) => {
 const server = app.listen(PORT, () => {
     console.log(`Express Web Server is running at ${server.address().port}`)
 })
-.....................................................................................
-....................................................................................
-			Router level middleware
-....................................................................................
-
-Middleware is set on Router Object
-
-router.use((req,res,next)=>{
-  next()
-})
-router.use('/url'(req,res,next)=>{
-  next()
-})
-router.get('/url'(req,res,next)=>{
-  next()
-})
-
-....................................................................................
+................................................................................
 			Router level middleware
 ....................................................................................
 
@@ -2747,7 +2730,6 @@ const myMiddleware = function (param) {
 app.use(myMiddleware('Marsh'))
 
 .....................................................................................
-.....................................................................................
 				Types of Middlewares
 .....................................................................................
 1.Application middleware
@@ -2759,7 +2741,7 @@ app.use(myMiddleware('Marsh'))
 1.Application middleware:
   Middleware is attached on application object
 
-2.Router level middlware
+2.Router level middleware
 
 ->writing router:
 
@@ -2846,7 +2828,7 @@ app.get('/api/greet/:message', (req, res) => {
 app.listen(3000, () => {
     console.log('Express server is running')
 })
-.....................................................................................
+
 ...................................................................................
 			Built in and third party middlewares
 ...................................................................................
@@ -2869,24 +2851,6 @@ body-parser:
 Node.js body parsing middleware.
 
 Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
-
-.....................................................................................
-...................................................................................
-			Built in and third party middlewares
-...................................................................................
-Built in middleware or third party middlewares
-
-Middlewares are supplied as part of the express team, open source community.
-https://expressjs.com/en/resources/middleware.html
-
-in order to parse the incoming payload into javascript object.
-
-Built in middleware or third party middlewares
-
-Middlewares are supplied as part of the express team, open source community.
-
-
-in order to parse the incoming payload into javascript object.
 
 body-parser:
 
@@ -3036,17 +3000,14 @@ const server = app.listen(PORT, () => {
     console.log(server.address())
     console.log(`Express server is running @ ${server.address().port}`)
 });
-............................................................................................
-			  Database Integration
-.........................................................................................
 .....................................................................................
 			  Database Integration
 .....................................................................................
 
 Express can integrate sql and no sql databases, provided database drivers.
 
-sql databases:
-1.microsoft sql server
+Sql databases:
+1.microsoft Sql server
 2.MySql
 3.Postgress SQL
 4.Oracle
@@ -3059,13 +3020,13 @@ NoSql
 etc...
 
 .....................................................................................
-			ORM and ODM
+			      ORM and ODM
 .....................................................................................
 
 ORM - Object relational mapping for sql databases
 ODM - Object Document Mapping for nosql-Mongodb
 
-ORM framworks for node.js
+ORM frameworks for node.js
 1.Prisma
 3.sequelize
 2.typeorm
@@ -3093,7 +3054,7 @@ Prerequisites
 
 create project with all dependency:
 
- Note: we are going to use in-memory database called sqlite.
+ Note: we are going to use in-memory database called SQLite.
 
 Steps:
 G:\IBM\2024\Oct\NodeJs\prismaSQL>npm init --yes
@@ -3179,8 +3140,6 @@ Model represents table in database.
 2.Map to the tables (relational databases like PostgreSQL) or collections (MongoDB)   in your database
 3.Form the foundation of the queries available in the generated Prisma Client API
 4.When used with TypeScript, Prisma Client provides generated type definitions for  your models and any variations of them to make database access entirely type safe.
-
-
 
 
 // This is your Prisma schema file,
