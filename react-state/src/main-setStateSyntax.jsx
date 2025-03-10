@@ -2,26 +2,28 @@ import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
-//parent component
 class Counter extends React.Component {
+
     state = {
-        counter: 0
+        counter: 0 //inital state
     }
+
+    //event listener
+    // onIncrement = () => {
+    //     this.setState((prevState) => ({ ...prevState, counter: prevState.counter + 1 }))
+    // }
     onIncrement = () => {
         this.setState(({ ...this.state, counter: this.state.counter + 1 }))
     }
-    render() {
-        return <CounterDisplay counter={this.state.counter} onIncrement={this.onIncrement} />
-    }
-}
 
-//child component
-const CounterDisplay = (props) => {
-    return <div>
-        <h1>Counter App</h1>
-        <h2>Value : {props.counter}</h2>
-        <button onClick={props.onIncrement} >+</button>
-    </div>
+    render() {
+        console.log('render is called')
+        return <div>
+            <h1>Counter App</h1>
+            <h2>Value : {this.state.counter}</h2>
+            <button onClick={this.onIncrement} >+</button>
+        </div>
+    }
 }
 
 
